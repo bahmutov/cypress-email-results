@@ -2,9 +2,67 @@
 
 > Easily email the test results after Cypress is done
 
+## Install
+
+Add this plugin as a dev dependency to your Cypress project
+
+```
+# install using NPM
+$ npm i -D cypress-email-results
+# or using Yarn
+$ yarn add -D cypress-email-results
+```
+
+Register the plugin from your [cypress/plugins/index.js](./cypress/plugins/index.js) file
+
+```js
+module.exports = (on, config) => {
+  require('cypress-email-results')(on, config, {
+    email: ['user1@email.com', 'user2@email.com'],
+  })
+}
+```
+
+## Using SendGrid
+
+If you use SendGrid as your SMTP server, set the environment variables for the plugin to read, something like:
+
+```
+SENDGRID_HOST=smtp.sendgrid.net
+SENDGRID_PORT=465
+SENDGRID_USER=...
+SENDGRID_PASSWORD=...
+SENDGRID_FROM=...
+```
+
+## Using non-SendGrid SMTP server
+
+You can create your own smpt transport using [nodemailer](https://nodemailer.com/about/) module.
+
+```js
+// create your own SMTP transport
+const transport = ...
+
+module.exports = (on, config) => {
+  require('cypress-email-results')(on, config, {
+    email: ['user1@email.com', 'user2@email.com'],
+    // pass your transport object
+    transport,
+  })
+}
+```
+
+As long as `transport.sendEmail` exists, the plugin will try to use it to send an email with results.
+
+## Single instance
+
+**Important:** this plugin only sends the test results from the current Cypress instance. If you are using [Cypress parallelization](https://on.cypress.io/parallelization) then each test runner will send its portion of the results.
+
 ## See also
 
 - plugin [cypress-json-results](https://github.com/bahmutov/cypress-json-results)
+- [Cypress ethereal email example](https://github.com/bahmutov/cypress-ethereal-email-example)
+- presentation [Full End-to-End Testing for Your HTML Email Workflows](https://slides.com/bahmutov/email-testing)
 
 ## Small print
 
