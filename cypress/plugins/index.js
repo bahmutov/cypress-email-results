@@ -1,7 +1,5 @@
 /// <reference types="cypress" />
 
-let allResults
-
 /**
  * @type {Cypress.PluginConfig}
  */
@@ -9,9 +7,16 @@ let allResults
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
-  require('../../src')({
-    on,
-    filename: 'results.json',
-    updateMarkdownFile: 'README.md',
-  })
+
+  // only register sending the results by email
+  // if there is an email address
+  if (process.env.EMAIL_RESULTS_TO) {
+    console.log(
+      'will email test results to %s',
+      process.env.EMAIL_RESULTS_TO.slice(0, 3) + '...',
+    )
+    require('../../src')(on, config, { email: process.env.EMAIL_RESULTS_TO })
+  } else {
+    console.log('will not send email results')
+  }
 }
