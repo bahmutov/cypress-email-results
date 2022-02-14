@@ -29,6 +29,26 @@ const initEmailTransport = () => {
   return transporter
 }
 
+function dashes(s) {
+  return '-'.repeat(s.length)
+}
+
+function getStatusEmoji(status) {
+  // https://glebbahmutov.com/blog/cypress-test-statuses/
+  const validStatuses = ['passed', 'failed', 'pending', 'skipped']
+  if (!validStatuses.includes(status)) {
+    throw new Error(`Invalid status: "${status}"`)
+  }
+
+  const emoji = {
+    passed: '✅',
+    failed: '❌',
+    pending: '⌛',
+    skipped: '⚠️',
+  }
+  return emoji[status]
+}
+
 function registerCypressEmailResults(on, config, options) {
   if (!options) {
     throw new Error('options is required')
@@ -99,7 +119,24 @@ function registerCypressEmailResults(on, config, options) {
       ${totals.tests} total tests across ${n} test files.
       ${totals.passed} tests passed, ${totals.failed} failed, ${totals.pending} pending, ${totals.skipped} skipped.
     `
-    const testResults = JSON.stringify(allResults, null, 2)
+    const testResults = Object.keys(allResults)
+      .map((spec) => {
+        const specResults = allResults[spec]
+        return (
+          spec +
+          '\n' +
+          dashes(spec) +
+          '\n' +
+          Object.keys(specResults)
+            .map((testName) => {
+              const testStatus = specResults[testName]
+              const testCharacter = getStatusEmoji(testStatus)
+              return `${testCharacter} ${testName}`
+            })
+            .join('\n')
+        )
+      })
+      .join('\n\n')
 
     const emailOptions = {
       to: emails,
@@ -110,7 +147,7 @@ function registerCypressEmailResults(on, config, options) {
 
     console.log(emailOptions.text)
 
-    await emailSender.sendMail(emailOptions)
+    // await emailSender.sendMail(emailOptions)
     console.log('Cypress results emailed')
   })
 }
