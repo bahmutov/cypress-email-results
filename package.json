@@ -1,0 +1,30 @@
+{
+  "name": "cypress-email-results",
+  "version": "0.0.0-development",
+  "description": "Easily email the test results after Cypress is done",
+  "main": "src",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "cypress run",
+    "semantic-release": "semantic-release"
+  },
+  "keywords": [
+    "cypress-plugin"
+  ],
+  "author": "Gleb Bahmutov <gleb.bahmutov@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "cypress": "9.4.1",
+    "prettier": "2.5.1",
+    "semantic-release": "19.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bahmutov/cypress-email-results.git"
+  },
+  "dependencies": {
+    "common-tags": "^1.8.2"
+  }
+}
