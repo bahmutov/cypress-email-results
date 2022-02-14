@@ -1,7 +1,10 @@
+// @ts-check
 /// <reference types="cypress" />
 
 // https://nodemailer.com/about/
 const nodemailer = require('nodemailer')
+// https://github.com/zspecza/common-tags
+const { stripIndent } = require('common-tags')
 
 const initEmailTransport = () => {
   if (!process.env.SENDGRID_HOST) {
@@ -69,7 +72,7 @@ function registerCypressEmailResults(on, config, options) {
     // add the totals to the results
     // explanation of test statuses in the blog post
     // https://glebbahmutov.com/blog/cypress-test-statuses/
-    allResults.totals = {
+    const totals = {
       suites: afterRun.totalSuites,
       tests: afterRun.totalTests,
       failed: afterRun.totalFailed,
@@ -80,22 +83,32 @@ function registerCypressEmailResults(on, config, options) {
 
     console.log(
       'cypress-email-results: %d total tests, %d passes, %d failed, %d others',
-      allResults.totals.tests,
-      allResults.totals.passed,
-      allResults.totals.failed,
-      allResults.totals.pending + allResults.totals.skipped,
+      totals.tests,
+      totals.passed,
+      totals.failed,
+      totals.pending + totals.skipped,
     )
     console.log(
       'cypress-email-results: sending results to %d email users',
       emails.length,
     )
 
+    const runStatus = totals.failed > 0 ? 'FAILED' : 'SUCCESS'
+    const n = Object.keys(allResults).length
+    const textStart = stripIndent`
+      ${totals.tests} total tests across ${n} test files.
+      ${totals.passed} tests passed, ${totals.failed} failed, ${totals.pending} pending, ${totals.skipped} skipped.
+    `
+    const testResults = JSON.stringify(allResults, null, 2)
+
     const emailOptions = {
       to: emails,
       from: process.env.SENDGRID_FROM,
-      subject: 'Cypress test results',
-      text: 'TODO: add results text',
+      subject: `Cypress test results ${runStatus}`,
+      text: textStart + '\n\n' + testResults + '\n',
     }
+
+    console.log(emailOptions.text)
 
     await emailSender.sendMail(emailOptions)
     console.log('Cypress results emailed')
