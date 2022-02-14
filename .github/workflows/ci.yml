@@ -10,6 +10,9 @@ jobs:
       - name: Run tests 🧪
         # https://github.com/cypress-io/github-action
         uses: cypress-io/github-action@v2
+        env:
+          # email test results after the tests are finished
+          EMAIL_RESULTS_TO: ${{ secrets.EMAIL_RESULTS_TO }}
 
       - name: Semantic Release 🚀
         uses: cycjimmy/semantic-release-action@v2
