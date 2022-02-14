@@ -138,16 +138,17 @@ function registerCypressEmailResults(on, config, options) {
       })
       .join('\n\n')
 
+    const dashboard = afterRun.runUrl ? `Run url: ${afterRun.runUrl}\n` : ''
     const emailOptions = {
       to: emails,
       from: process.env.SENDGRID_FROM,
       subject: `Cypress test results ${runStatus}`,
-      text: textStart + '\n\n' + testResults + '\n',
+      text: textStart + '\n\n' + testResults + '\n' + dashboard,
     }
 
-    console.log(emailOptions.text)
+    // console.log(emailOptions.text)
 
-    // await emailSender.sendMail(emailOptions)
+    await emailSender.sendMail(emailOptions)
     console.log('Cypress results emailed')
   })
 }
