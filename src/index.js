@@ -47,8 +47,15 @@ function registerCypressEmailResults(on, config, options) {
     }
 
     console.log(
-      'cypress-email-results: sending results to %s',
-      emails.join(', '),
+      'cypress-email-results: %d total tests, %d passes, %d failed, %d others',
+      allResults.totals.tests,
+      allResults.totals.passed,
+      allResults.totals.failed,
+      allResults.totals.pending + allResults.totals.skipped,
+    )
+    console.log(
+      'cypress-email-results: sending results to %d email users',
+      emails.length,
     )
   })
 }
