@@ -14,11 +14,11 @@ jobs:
           # email test results after the tests are finished
           EMAIL_RESULTS_TO: ${{ secrets.EMAIL_RESULTS_TO }}
           # pass SendGrid settings to the plugin via environment variables
-          SENDGRID_HOST=${{ secrets.SENDGRID_HOST }}
-          SENDGRID_PORT=${{ secrets.SENDGRID_PORT }}
-          SENDGRID_USER=${{ secrets.SENDGRID_USER }}
-          SENDGRID_PASSWORD=${{ secrets.SENDGRID_PASSWORD }}
-          SENDGRID_FROM=${{ secrets.SENDGRID_FROM }}
+          SENDGRID_HOST: ${{ secrets.SENDGRID_HOST }}
+          SENDGRID_PORT: ${{ secrets.SENDGRID_PORT }}
+          SENDGRID_USER: ${{ secrets.SENDGRID_USER }}
+          SENDGRID_PASSWORD: ${{ secrets.SENDGRID_PASSWORD }}
+          SENDGRID_FROM: ${{ secrets.SENDGRID_FROM }}
 
       - name: Semantic Release 🚀
         uses: cycjimmy/semantic-release-action@v2
