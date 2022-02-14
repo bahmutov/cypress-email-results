@@ -2,6 +2,10 @@
 
 > Easily email the test results after Cypress is done
 
+## See also
+
+- plugin [cypress-json-results](https://github.com/bahmutov/cypress-json-results)
+
 ## Small print
 
 Author: Gleb Bahmutov &lt;gleb.bahmutov@gmail.com&gt; &copy; 2022

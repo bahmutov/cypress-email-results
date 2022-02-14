@@ -1,6 +1,30 @@
 /// <reference types="cypress" />
 
-const fs = require('fs')
+// https://nodemailer.com/about/
+const nodemailer = require('nodemailer')
+
+const initEmailTransport = () => {
+  if (!process.env.SENDGRID_HOST) {
+    throw new Error(`Missing SENDGRID_ variables`)
+  }
+
+  const host = process.env.SENDGRID_HOST
+  const port = Number(process.env.SENDGRID_PORT)
+  const secure = port === 465
+  const auth = {
+    user: process.env.SENDGRID_USER,
+    pass: process.env.SENDGRID_PASSWORD,
+  }
+
+  // create reusable transporter object using the default SMTP transport
+  const transporter = nodemailer.createTransport({
+    host,
+    port,
+    secure,
+    auth,
+  })
+  return transporter
+}
 
 function registerCypressEmailResults(on, config, options) {
   if (!options) {
@@ -13,6 +37,14 @@ function registerCypressEmailResults(on, config, options) {
   const emails = Array.isArray(options.email) ? options.email : [options.email]
   if (!on) {
     throw new Error('Missing required option: on')
+  }
+
+  const emailSender = options.transport || initEmailTransport()
+  if (!emailSender) {
+    throw new Error('Could not initialize emailSender')
+  }
+  if (!emailSender.sendMail) {
+    throw new Error('emailSender does not have sendMail')
   }
 
   // keeps all test results by spec
@@ -57,6 +89,16 @@ function registerCypressEmailResults(on, config, options) {
       'cypress-email-results: sending results to %d email users',
       emails.length,
     )
+
+    const emailOptions = {
+      to: emails,
+      from: process.env.SENDGRID_FROM,
+      subject: 'Cypress test results',
+      text: 'TODO: add results text',
+    }
+
+    await emailSender.sendMail(emailOptions)
+    console.log('Cypress results emailed')
   })
 }
 
