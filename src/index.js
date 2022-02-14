@@ -1,14 +1,17 @@
 /// <reference types="cypress" />
 
 const fs = require('fs')
-const { updateText } = require('./update-text')
 
-function registerCypressJsonResults(options = {}) {
-  const defaults = {
-    filename: 'results.json',
+function registerCypressEmailResults(on, config, options) {
+  if (!options) {
+    throw new Error('options is required')
   }
-  options = { ...options, defaults }
-  if (!options.on) {
+  if (!options.email) {
+    throw new Error('options.email is required')
+  }
+
+  const emails = Array.isArray(options.email) ? options.email : [options.email]
+  if (!on) {
     throw new Error('Missing required option: on')
   }
 
@@ -16,11 +19,11 @@ function registerCypressJsonResults(options = {}) {
   let allResults
 
   // `on` is used to hook into various events Cypress emits
-  options.on('before:run', () => {
+  on('before:run', () => {
     allResults = {}
   })
 
-  options.on('after:spec', (spec, results) => {
+  on('after:spec', (spec, results) => {
     allResults[spec.relative] = {}
     // shortcut
     const r = allResults[spec.relative]
@@ -30,7 +33,7 @@ function registerCypressJsonResults(options = {}) {
     })
   })
 
-  options.on('after:run', (afterRun) => {
+  on('after:run', async (afterRun) => {
     // add the totals to the results
     // explanation of test statuses in the blog post
     // https://glebbahmutov.com/blog/cypress-test-statuses/
@@ -43,21 +46,11 @@ function registerCypressJsonResults(options = {}) {
       skipped: afterRun.totalSkipped,
     }
 
-    const str = JSON.stringify(allResults, null, 2)
-    fs.writeFileSync(options.filename, str + '\n')
-    console.log('cypress-json-results: wrote results to %s', options.filename)
-
-    if (options.updateMarkdownFile) {
-      const markdownFile = options.updateMarkdownFile
-      const markdown = fs.readFileSync(markdownFile, 'utf8')
-      const updated = updateText(markdown, allResults.totals)
-      fs.writeFileSync(markdownFile, updated)
-      console.log(
-        'cypress-json-results: updated Markdown file %s',
-        markdownFile,
-      )
-    }
+    console.log(
+      'cypress-email-results: sending results to %s',
+      emails.join(', '),
+    )
   })
 }
 
-module.exports = registerCypressJsonResults
+module.exports = registerCypressEmailResults
