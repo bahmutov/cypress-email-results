@@ -2,6 +2,8 @@
 
 > Easily email the test results after Cypress is done
 
+![Sent email example](./images/email.png)
+
 ## Install
 
 Add this plugin as a dev dependency to your Cypress project
