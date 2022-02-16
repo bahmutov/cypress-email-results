@@ -5,6 +5,7 @@
 const nodemailer = require('nodemailer')
 // https://github.com/zspecza/common-tags
 const { stripIndent } = require('common-tags')
+const ci = require('ci-info')
 
 const initEmailTransport = () => {
   if (!process.env.SENDGRID_HOST) {
@@ -165,11 +166,17 @@ function registerCypressEmailResults(on, config, options) {
       ? `${name} - Cypress tests ${runStatus}`
       : `Cypress tests ${runStatus}`
     const dashboard = afterRun.runUrl ? `Run url: ${afterRun.runUrl}\n` : ''
+    let text = textStart + '\n\n' + testResults + '\n' + dashboard
+
+    if (ci.isCI) {
+      text += '\n' + ci.name
+    }
+
     const emailOptions = {
       to: emails,
       from: process.env.SENDGRID_FROM,
       subject,
-      text: textStart + '\n\n' + testResults + '\n' + dashboard,
+      text,
     }
 
     // console.log(emailOptions.text)

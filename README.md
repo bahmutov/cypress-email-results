@@ -88,6 +88,10 @@ As long as `transport.sendEmail` exists, the plugin will try to use it to send a
 
 **Important:** this plugin only sends the test results from the current Cypress instance. If you are using [Cypress parallelization](https://on.cypress.io/parallelization) then each test runner will send its portion of the results.
 
+## Demo
+
+Set the `dry: true` option and run `npm run demo`. To see the demo on CircleCI, run `CI=1 CIRCLECI=1 npm run demo`.
+
 ## See also
 
 - plugin [cypress-json-results](https://github.com/bahmutov/cypress-json-results)
