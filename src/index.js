@@ -70,6 +70,9 @@ function registerCypressEmailResults(on, config, options) {
     throw new Error('emailSender does not have sendMail')
   }
 
+  const emailOnSuccess =
+    'emailOnSuccess' in options ? options.emailOnSuccess : true
+
   // keeps all test results by spec
   let allResults
 
@@ -108,12 +111,20 @@ function registerCypressEmailResults(on, config, options) {
       totals.failed,
       totals.pending + totals.skipped,
     )
+
+    const runStatus = totals.failed > 0 ? 'FAILED' : 'SUCCESS'
+    if (totals.failed === 0) {
+      // successful run
+      if (!emailOnSuccess) {
+        return
+      }
+    }
+
     console.log(
       'cypress-email-results: sending results to %d email users',
       emails.length,
     )
 
-    const runStatus = totals.failed > 0 ? 'FAILED' : 'SUCCESS'
     const n = Object.keys(allResults).length
     const textStart = stripIndent`
       ${totals.tests} total tests across ${n} test files.

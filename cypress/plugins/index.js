@@ -15,7 +15,10 @@ module.exports = (on, config) => {
       'will email test results to %s',
       process.env.EMAIL_RESULTS_TO.slice(0, 3) + '...',
     )
-    require('../../src')(on, config, { email: process.env.EMAIL_RESULTS_TO })
+    require('../../src')(on, config, {
+      email: process.env.EMAIL_RESULTS_TO,
+      emailOnSuccess: false,
+    })
   } else {
     console.log('will not send email results')
   }

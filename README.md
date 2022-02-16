@@ -25,6 +25,19 @@ module.exports = (on, config) => {
 }
 ```
 
+### emailOnSuccess
+
+You can set this plugin to only send an email if the test run has failed
+
+```js
+module.exports = (on, config) => {
+  require('cypress-email-results')(on, config, {
+    email: ['user1@email.com', 'user2@email.com'],
+    emailOnSuccess: false,
+  })
+}
+```
+
 ## Using SendGrid
 
 If you use SendGrid as your SMTP server, set the environment variables for the plugin to read, something like:
