@@ -4,6 +4,8 @@
 
 ![Sent email example](./images/email.png)
 
+Read the blog post [Email Cypress Test Report](https://glebbahmutov.com/blog/email-cypress-report/)
+
 ## Install
 
 Add this plugin as a dev dependency to your Cypress project
