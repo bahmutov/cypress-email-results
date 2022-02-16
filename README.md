@@ -38,6 +38,21 @@ module.exports = (on, config) => {
 }
 ```
 
+### dry
+
+You can print the email instead of sending it using the `dry` option
+
+```js
+module.exports = (on, config) => {
+  require('cypress-email-results')(on, config, {
+    email: ['user1@email.com', 'user2@email.com'],
+    dry: true,
+  })
+}
+```
+
+Note: the email client is still initialized.
+
 ## Using SendGrid
 
 If you use SendGrid as your SMTP server, set the environment variables for the plugin to read, something like:

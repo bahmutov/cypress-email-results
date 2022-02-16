@@ -82,6 +82,7 @@ function registerCypressEmailResults(on, config, options) {
 
   const emailOnSuccess =
     'emailOnSuccess' in options ? options.emailOnSuccess : true
+  const dryRun = 'dry' in options ? options.dry : false
 
   // keeps all test results by spec
   let allResults
@@ -172,9 +173,16 @@ function registerCypressEmailResults(on, config, options) {
     }
 
     // console.log(emailOptions.text)
-
-    await emailSender.sendMail(emailOptions)
-    console.log('Cypress results emailed')
+    if (dryRun) {
+      console.log('cypress-email-results: dry run, not sending email')
+      console.log('')
+      console.log(subject)
+      console.log('')
+      console.log(emailOptions.text)
+    } else {
+      await emailSender.sendMail(emailOptions)
+      console.log('Cypress results emailed')
+    }
   })
 }
 
