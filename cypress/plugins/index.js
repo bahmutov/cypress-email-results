@@ -17,7 +17,7 @@ module.exports = (on, config) => {
     )
     require('../../src')(on, config, {
       email: process.env.EMAIL_RESULTS_TO,
-      emailOnSuccess: false,
+      emailOnSuccess: true,
     })
   } else {
     console.log('will not send email results')

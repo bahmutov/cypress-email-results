@@ -33,6 +33,16 @@ function dashes(s) {
   return '-'.repeat(s.length)
 }
 
+function getProjectName() {
+  try {
+    // @ts-ignore
+    const pkg = require('./package.json')
+    return pkg.name
+  } catch (e) {
+    return
+  }
+}
+
 function getStatusEmoji(status) {
   // https://glebbahmutov.com/blog/cypress-test-statuses/
   const validStatuses = ['passed', 'failed', 'pending', 'skipped']
@@ -112,7 +122,7 @@ function registerCypressEmailResults(on, config, options) {
       totals.pending + totals.skipped,
     )
 
-    const runStatus = totals.failed > 0 ? 'FAILED' : 'SUCCESS'
+    const runStatus = totals.failed > 0 ? 'FAILED' : 'OK'
     if (totals.failed === 0) {
       // successful run
       if (!emailOnSuccess) {
@@ -149,11 +159,15 @@ function registerCypressEmailResults(on, config, options) {
       })
       .join('\n\n')
 
+    const name = getProjectName()
+    const subject = name
+      ? `${name} - Cypress tests ${runStatus}`
+      : `Cypress tests ${runStatus}`
     const dashboard = afterRun.runUrl ? `Run url: ${afterRun.runUrl}\n` : ''
     const emailOptions = {
       to: emails,
       from: process.env.SENDGRID_FROM,
-      subject: `Cypress test results ${runStatus}`,
+      subject,
       text: textStart + '\n\n' + testResults + '\n' + dashboard,
     }
 
