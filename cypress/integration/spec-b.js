@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
 describe('B', () => {
-  it('works', () => {})
+  it('works', () => {
+    cy.wait(1000)
+  })
 })

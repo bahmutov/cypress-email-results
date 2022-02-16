@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer')
 // https://github.com/zspecza/common-tags
 const { stripIndent } = require('common-tags')
 const ci = require('ci-info')
+const humanizeDuration = require('humanize-duration')
 
 const initEmailTransport = () => {
   if (!process.env.SENDGRID_HOST) {
@@ -168,8 +169,9 @@ function registerCypressEmailResults(on, config, options) {
     const dashboard = afterRun.runUrl ? `Run url: ${afterRun.runUrl}\n` : ''
     let text = textStart + '\n\n' + testResults + '\n' + dashboard
 
-    if (ci.isCI) {
-      text += '\n' + ci.name
+    if (ci.isCI && ci.name) {
+      text +=
+        '\n' + `${ci.name} duration ${humanizeDuration(afterRun.totalDuration)}`
     }
 
     const emailOptions = {
